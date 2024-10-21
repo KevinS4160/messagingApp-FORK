@@ -13,7 +13,7 @@ export default function App() {
         <Text>Input Method Editor</Text>
       </View>
       <View style={styles.toolbar}>
-        <Text>Toolbar</Text>
+        <Text>toolbar</Text>
       </View>
     </View>
   );
