@@ -1,12 +1,15 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Button } from "react-native";
+import { useState } from "react";
 import Status from './components/Status'
 
 export default function App() {
+  const [pressed, setPressed] = useState(false)
 
   return (
     <View style={styles.container}>
       <Status />
       <View style={styles.content}>
+        <Button title="debug" onPress={()=>setPressed(pressed ? false : true)}/>
         <Text>Content</Text>
       </View>
       <View style={styles.inputMethodEditor}>
