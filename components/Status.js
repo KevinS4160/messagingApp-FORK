@@ -14,41 +14,56 @@ import NetInfo from "@react-native-community/netinfo";
 
 
 const Status = () => {
-  state = {
-    info: null,
-  };
+  const [isConnected, setIsConnected] = useState(true)
   
   const AnimatedStatusBar = Animated.createAnimatedComponent(StatusBar)
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const barAnim = useRef(new Animated.Value(0)).current;
-  const fade = () => {
+  const yMove = useRef(new Animated.Value(0)).current;
+
+  const fade = (connected) => {
     Animated.timing(fadeAnim, {
-      toValue: isConnected ? 0 : 1,
+      toValue: connected ? 0 : 1,
       duration: 1000,
+      delay: connected ? 1000 : 0,
       useNativeDriver: true,
     }).start();
 
     Animated.timing(barAnim, {
-      toValue: isConnected ? 0 : 1,
+      toValue: connected ? 0 : 1,
       duration: 1000,
       useNativeDriver: false,
     }).start();
-  };
 
-  const unsubscribe = NetInfo.addEventListener((net) => {
-    this.state.info = net.type;
-    console.log("Connection type", net.type);
-    console.log("Is connected?", net.isConnected);
-  });
-  const isConnected = this.state.info !== "none";
+    Animated.timing(yMove, {
+      toValue: connected ? 0 : 1,
+      duration: 1000,
+      delay: connected ? 1000 : 0,
+      useNativeDriver: true,
+    }).start();
+  };
 
   const backgroundColor = barAnim.interpolate({
     inputRange: [0, 1],
     outputRange: ['rgba(255,0,0,0)','rgba(255,0,0,1)'],
   });
+  const yMovement = yMove.interpolate({
+    inputRange: [0,1],
+    outputRange: [-100, 0]
+  })
 
-  isConnected ? fade() : fade();
-  
+
+  useEffect(()=> {
+    const unsubscribe = NetInfo.addEventListener((net) => {
+      setIsConnected(net.isConnected)
+    })
+    return () => unsubscribe()
+  }, [])
+
+  useEffect(() => {
+    fade(isConnected)
+  }, [isConnected])
+
   const statusBar = (
     <Animated.View style={{ backgroundColor: backgroundColor }}>
       <AnimatedStatusBar
@@ -62,8 +77,16 @@ const Status = () => {
   const messageContainer = (
     <View style={styles.messageContainer} pointerEvents={"none"}>
       {statusBar}
-      <Animated.View style={[styles.bubble, { opacity: fadeAnim }]}>
-        <Text style={styles.text}>No Network Connection</Text>
+      <Animated.View
+        style={[
+          styles.bubble,
+          { opacity: fadeAnim, 
+            transform: [{ translateY: yMovement }],
+            backgroundColor: isConnected ? 'green' : 'red'},
+        ]}>
+        <Text style={styles.text}>
+          {isConnected ? "Connected" : "No Network Connectivity"}
+        </Text>
       </Animated.View>
     </View>
   );
@@ -100,7 +123,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 20,
-    backgroundColor: "red",
+    backgroundColor: 'red',
   },
   text: {
     color: "white",

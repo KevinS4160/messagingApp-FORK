@@ -9,7 +9,6 @@ export default function App() {
     <View style={styles.container}>
       <Status />
       <View style={styles.content}>
-        <Button title="debug" onPress={()=>setPressed(pressed ? false : true)}/>
         <Text>Content</Text>
       </View>
       <View style={styles.inputMethodEditor}>
@@ -34,6 +33,7 @@ const styles = StyleSheet.create({
     borderColor: "red",
     alignItems: "center",
     justifyContent: "center",
+    transform: [{translateY: 0}],
   },
   inputMethodEditor: {
     flex: 1,
