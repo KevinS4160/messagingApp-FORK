@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Button } from "react-native"
+import { StyleSheet, Text, View, Button, Alert } from "react-native"
 import { Component, useState } from "react"
 import Status from "./components/Status"
 import MessageList from "./components/MessageList"
@@ -9,28 +9,44 @@ import {
 } from "./utils/messageUtils"
 
 export default function App() {
+  const dummies = [
+    createTextMessage("this is a test"),
+    createTextMessage("2nd test"),
+    createImageMessage(
+      "https://www.brmwebdev.com/static/img/web-design/testing/testing.png"
+    ),
+    createTextMessage("2nd test"),
+    createTextMessage("2nd test"),
+    createTextMessage("2nd test"),
+    createLocationMessage({ latitude: 40.741895, longitude: -73.989308 }),
+  ]
   const [pressed, setPressed] = useState(false)
+  const [messages, setMessages] = useState(dummies)
 
-  state = {
-    messages: [
-      createTextMessage("this is a test"),
-      createTextMessage("2nd test"),
-      createImageMessage(
-        "https://www.brmwebdev.com/static/img/web-design/testing/testing.png"
-      ),
-      createTextMessage("2nd test"),
-      createTextMessage("2nd test"),
-      createTextMessage("2nd test"),
-      createLocationMessage({ latitude: 40.741895, longitude: -73.989308 }),
-    ],
+  deleteMessage = ({ id }) => {
+    setMessages((prevMessage) => prevMessage.filter((item) => item.id !== id))
+    console.log(messages)
   }
-  handlePressMessage = () => {}
+
+  handlePressMessage = (item) => {
+    console.log(item.id)
+    Alert.alert("Delete", "Are you sure you want to delete?", [
+      {
+        text: "Delete",
+        onPress: () => deleteMessage(item),
+        style: "destructive",
+      },
+      { text: "Cancel", onPress: () => console.log("cancel"), style: "cancel" },
+    ])
+  }
 
   renderMessageList = () => {
-    const { messages } = this.state
     return (
       <View style={styles.content}>
-        <MessageList messages={messages} />
+        <MessageList
+          messages={messages}
+          onPressMessage={this.handlePressMessage}
+        />
       </View>
     )
   }

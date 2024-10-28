@@ -76,7 +76,7 @@ export default class MessageList extends React.Component {
     return (
       <FlatList
         style={styles.container}
-        inverted={true}
+        inverted={false}
         data={messages}
         renderItem={this.renderMessageItem}
         keyExtractor={keyExtractor}
