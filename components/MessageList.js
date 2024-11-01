@@ -9,7 +9,6 @@ import {
 import PropTypes from "prop-types"
 import MapView, { Marker } from "react-native-maps"
 import React from "react"
-
 import { MessageShape } from "../utils/messageUtils"
 
 const keyExtractor = (item) => item.id.toString()
@@ -18,18 +17,24 @@ export default class MessageList extends React.Component {
   static propTypes = {
     messages: PropTypes.arrayOf(MessageShape).isRequired,
     onPressMessage: PropTypes.func,
+    onLongPressMessage: PropTypes.func,
   }
 
   static defaultProps = {
     onPressMessage: () => {},
+    onLongPressMessage: () => {},
   }
 
   renderMessageItem = ({ item }) => {
     {
-      const { onPressMessage } = this.props
+      const { onPressMessage, onLongPressMessage } = this.props
       return (
         <View key={item.id} style={styles.messageRow}>
-          <TouchableOpacity onPress={() => onPressMessage(item)}>
+          <TouchableOpacity
+            onPress={() => onPressMessage(item)}
+            onLongPress={() => onLongPressMessage(item)}
+            delayLongPress={1000}
+          >
             {this.renderMessageBody(item)}
           </TouchableOpacity>
         </View>
@@ -86,6 +91,8 @@ export default class MessageList extends React.Component {
   }
 }
 
+const green = "#8ACE00"
+const blue = "#218aff"
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -103,25 +110,28 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingVertical: 10,
     paddingHorizontal: 15,
-    backgroundColor: "#218aff",
+    backgroundColor: "black",
   },
   image: {
-    width: 150,
+    width: 200,
     aspectRatio: 1,
+    resizeMode: "contain",
+    overflow: "hidden",
   },
   imageContainer: {
-    borderWidth: 5,
+    padding: 5,
     borderRadius: 30,
-    borderColor: "#218aff",
+    backgroundColor: "black",
   },
   map: {
     width: 200,
     aspectRatio: 1,
+    overflow: "hidden",
   },
   mapContainer: {
     padding: 10,
     borderRadius: 15,
-    backgroundColor: "#218aff",
+    backgroundColor: "black",
   },
   text: {
     color: "white",

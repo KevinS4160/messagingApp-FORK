@@ -6,20 +6,18 @@ import {
   View,
   Animated,
   Easing,
-} from "react-native";
-import React, { Component, useState, useEffect, useRef } from "react";
-import Constants from "expo-constants";
-import NetInfo from "@react-native-community/netinfo";
-
-
+} from "react-native"
+import React, { Component, useState, useEffect, useRef } from "react"
+import Constants from "expo-constants"
+import NetInfo from "@react-native-community/netinfo"
 
 const Status = () => {
   const [isConnected, setIsConnected] = useState(true)
-  
+
   const AnimatedStatusBar = Animated.createAnimatedComponent(StatusBar)
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  const barAnim = useRef(new Animated.Value(0)).current;
-  const yMove = useRef(new Animated.Value(0)).current;
+  const fadeAnim = useRef(new Animated.Value(0)).current
+  const barAnim = useRef(new Animated.Value(0)).current
+  const yMove = useRef(new Animated.Value(0)).current
 
   const fade = (connected) => {
     Animated.timing(fadeAnim, {
@@ -27,33 +25,32 @@ const Status = () => {
       duration: 1000,
       delay: connected ? 1000 : 0,
       useNativeDriver: true,
-    }).start();
+    }).start()
 
     Animated.timing(barAnim, {
       toValue: connected ? 0 : 1,
       duration: 1000,
       useNativeDriver: false,
-    }).start();
+    }).start()
 
     Animated.timing(yMove, {
       toValue: connected ? 0 : 1,
       duration: 1000,
       delay: connected ? 1000 : 0,
       useNativeDriver: true,
-    }).start();
-  };
+    }).start()
+  }
 
   const backgroundColor = barAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ['rgba(255,0,0,0)','rgba(255,0,0,1)'],
-  });
+    outputRange: ["rgba(255,0,0,0)", "rgba(255,0,0,1)"],
+  })
   const yMovement = yMove.interpolate({
-    inputRange: [0,1],
-    outputRange: [-100, 0]
+    inputRange: [0, 1],
+    outputRange: [-100, 0],
   })
 
-
-  useEffect(()=> {
+  useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((net) => {
       setIsConnected(net.isConnected)
     })
@@ -72,38 +69,41 @@ const Status = () => {
         backgroundColor={backgroundColor}
       />
     </Animated.View>
-  );
-  
+  )
+
   const messageContainer = (
     <View style={styles.messageContainer} pointerEvents={"none"}>
       {statusBar}
       <Animated.View
         style={[
           styles.bubble,
-          { opacity: fadeAnim, 
+          {
+            opacity: fadeAnim,
             transform: [{ translateY: yMovement }],
-            backgroundColor: isConnected ? 'green' : 'red'},
-        ]}>
+            backgroundColor: isConnected ? "green" : "red",
+          },
+        ]}
+      >
         <Text style={styles.text}>
           {isConnected ? "Connected" : "No Network Connectivity"}
         </Text>
       </Animated.View>
     </View>
-  );
+  )
 
   if (Platform.OS == "ios") {
     return (
       <View style={[styles.status, { backgroundColor }]}>
         {messageContainer}
       </View>
-    );
+    )
   }
-  return messageContainer;
-};
+  return messageContainer
+}
 
-export default Status;
+export default Status
 
-const statusHeight = Platform.OS == "ios" ? Constants.statusBarHeight : 0;
+const statusHeight = Platform.OS == "ios" ? Constants.statusBarHeight : 0
 
 const styles = StyleSheet.create({
   status: {
@@ -123,9 +123,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 20,
-    backgroundColor: 'red',
+    backgroundColor: "red",
   },
   text: {
     color: "white",
   },
-});
+})
