@@ -56,7 +56,7 @@ export default class Toolbar extends Component {
     this.input = ref
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate(nextProps) {
     if (nextProps.isFocused !== this.props.isFocused) {
       if (nextProps.isFocused) {
         this.input.focus()

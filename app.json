@@ -26,6 +26,14 @@
     "androidStatusBar": {
       "barStyle": "dark-content",
       "backgroundColor": "#FFFFFF"
-    }
+    },
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+        }
+      ]
+    ]
   }
 }
